@@ -1,0 +1,14 @@
+.card{
+    box-shadow: 4px 4px 8px #000;
+}
+.card:hover{
+    box-shadow: 8px 8px 10px #000;
+    cursor: pointer;
+}
+main{
+    min-height: 100vh;
+}
+body{
+margin-top: 10vh;
+
+}
