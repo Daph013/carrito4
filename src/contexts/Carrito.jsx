@@ -1,49 +1,39 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { carritoContext } from "./carritoContext"
 import Swal from 'sweetalert2'
 const Carrito = ({children}) => {
 
-    const [cart, setCart] = useState([]);
+  const [cart, setCart] = useState(JSON.parse(localStorage.getItem("cart")) || []);
+  useEffect(() => {
+    // Guardar el estado cart en el localStorage
+    localStorage.setItem("cart", JSON.stringify(cart));
+  }, [cart])
 
-    const agregar = (producto) =>{
-        
+    const agregar = (producto, cant) =>{
+      if(producto.stock >= cant){
+        cant=parseInt(cant)
         setCart((currItems)=>{
             const isItemInCart = currItems.find((item)=> item.id === producto.id)
             if(isItemInCart){
                 return currItems.map((item)=>{
                   if(item.id === producto.id){
-
-
-
-                    if(item.cantidad<item.stock){
-                         return {...item, cantidad: item.cantidad + 1}; 
-                    }else{
-                        Swal.fire({
-                            icon: "error",
-                            title: "Oops...",
-                            text: "ERROR: Cantidad mayor al stock disponible!",
-                            
-                          });
-                        return {...item, cantidad: item.cantidad };  
-                    }
-                  
                     
-                    
+                    return {...item, cantidad: item.cantidad = cant};
 
-                  }
-                  
-                  else{
+                  }else{
                     return item;
                   }  
                 })
         }else{
-            return [...currItems, {...producto, cantidad: 1}];
+            return [...currItems, {...producto, cantidad: cant}];
         }
         })
-
+      }else{
+        alert("La cantidad no puede ser mayor al STOCK!!!!")
+      }
         //setCart([...cart, producto])
        //console.log("agregado")
-       console.log(cart)
+       //console.log(cart)
     }
     const vaciar = () =>{
         setCart([])

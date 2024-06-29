@@ -1,15 +1,24 @@
 import Detalle from "./Detalle"
 //carrito
-import { useContext } from "react";
+import { useContext, useState } from "react";
 import { carritoContext } from "../contexts/carritoContext";
 
 
 const Cardprod = ({ item }) => {
 
     const { cart, agregar, vaciar, eliminar, comprar } = useContext(carritoContext)
+   
+   
     const getCantidad = (item) => {
         return cart.find((producto) => producto.id === item.id)?.cantidad || 0
     }
+    
+    
+    const [cant, setCant] = useState(1);
+    const handleChange = (event) => {
+        setCant(event.target.value);
+      };
+
     const totalProd = getCantidad(item)
 
     return (
@@ -36,16 +45,42 @@ const Cardprod = ({ item }) => {
                     <div className="card-footer text-center">
                         <button className="btn btn-outline-danger btn-sm mx-1" data-bs-toggle="modal" data-bs-target={`#${item.id}`} >Detalle</button>
                         
-                        <hr />
-                        <button className="btn btn-success btn-sm mx-1" onClick={() => agregar(item)}>+ Agregar al carrito</button>
-                        {
-                            totalProd > 0 && (
-                                <button className="btn btn-danger btn-sm mx-1" onClick={() => eliminar(item)}>- Restar</button>
-                            )
-
-                        }
+                        <hr /> 
+                        <div className="d-flex justify-content-center">    
+                        <select
+                value={cant}
+                onChange={handleChange}
+                className="form-control input- bg-dark text-white-50"
+                style={{ width: 80 }}
+                >
+                {Array.from({ length: item.stock +1}, (_, i) => i+1).map((option) => (
+                    <option key={option} value={option}>
+                    {option}
+                    </option>
+                ))}
+                </select>
+          
+           {/*}
+            <input 
+            type="number" 
+            value={cant} 
+            onChange={handleChange}  
+            className="form-control bg-dark text-white"  
+            style={{width:80}} 
+            onFocus={(e) => e.target.select()}
+            min={0}
+            />
+     */}          
+      
+                        <button className="btn btn-success mx-1 btn-sm" onClick={() => agregar(item, cant)}>Agregar al carrito</button>
+                        <button className="btn btn-outline-warning btn-sm mx-1 " onClick={() => agregar(producto, cant)}>Actualizar</button>
+            
+            
+          
+                        
                     </div>
                 </div>
+            </div>
             </div>
             <Detalle item={item} key={item.id} />
         </>
